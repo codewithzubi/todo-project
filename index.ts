@@ -1,8 +1,12 @@
 #! usr/bin/env node
+
 import inquirer from "inquirer";
 
 let tasks: string[] = [];
-const commandMenu = async () => {
+
+let condition = true;
+
+while (condition) {
   let choice = await inquirer.prompt([
     {
       name: "menu",
@@ -22,7 +26,6 @@ const commandMenu = async () => {
     ]);
     tasks.push(task.task);
     console.log("Task added successfully!");
-    commandMenu();
   } else if (choice.menu === "Display Task") {
     if (tasks.length === 0) {
       console.log("NO TASK TO DISPLAY");
@@ -32,30 +35,27 @@ const commandMenu = async () => {
         console.log(`${index + 1}. ${task} `);
       });
     }
-    commandMenu();
   } else if (choice.menu === "Delete Task") {
     if (tasks.length === 0) {
       console.log("NO TASK TO DELETE");
-      commandMenu();
-      return;
-    }
-    let indexNumber = await inquirer.prompt([
-      {
-        name: "index",
-        type: "input",
-        message: "Enter the task number to delete:",
-      },
-    ]);
-    let taskIndexNumber = parseInt(indexNumber.index);
-    if (taskIndexNumber >= 1 && taskIndexNumber <= tasks.length) {
-      const deletedTask = tasks.splice(taskIndexNumber - 1, 1)[0];
-      console.log(`Task '${deletedTask}' deleted successfully!`);
     } else {
-      console.log("INVAlID TASK INDEX");
+      let indexNumber = await inquirer.prompt([
+        {
+          name: "index",
+          type: "input",
+          message: "Enter the task number to delete:",
+        },
+      ]);
+      let taskIndexNumber = parseInt(indexNumber.index);
+      if (taskIndexNumber >= 1 && taskIndexNumber <= tasks.length) {
+        const deletedTask = tasks.splice(taskIndexNumber - 1, 1)[0];
+        console.log(`Task '${deletedTask}' deleted successfully!`);
+      } else {
+        console.log("INVALID TASK INDEX");
+      }
     }
-    commandMenu();
   } else {
     console.log("EXITING....");
+    condition = false; // Loop se bhair
   }
-};
-commandMenu();
+}
